@@ -1,0 +1,77 @@
+import java.nio.charset.StandardCharsets
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.ben-manes.versions' version '0.52.0'
+    id 'org.ajoberstar.reckon' version '0.19.2'
+    id 'io.sentry.jvm.gradle' version '5.7.0'
+}
+
+def generalCharset = StandardCharsets.UTF_8.name()
+
+static def isNonStable(String version) {
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+group = 'fr.alexpado'
+
+compileJava.options.encoding = generalCharset
+compileTestJava.options.encoding = generalCharset
+javadoc.options.encoding = generalCharset
+
+reckon {
+    defaultInferredScope = 'patch'
+    snapshots()
+
+    scopeCalc = calcScopeFromProp() | calcScopeFromCommitMessages()
+    stageCalc = calcStageFromProp()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyUpdates {
+    rejectVersionIf {
+        isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.5.3'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '11.9.1'
+    implementation group: 'org.flywaydb', name: 'flyway-mysql', version: '11.9.1'
+
+    implementation group: 'org.jetbrains', name: 'annotations', version: '26.0.2'
+    implementation group: 'org.json', name: 'json', version: '20250517'
+
+    implementation group: 'fr.alexpado', name: 'simple-http-client', version: '1.1.2'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-Xlint:deprecation']
+}

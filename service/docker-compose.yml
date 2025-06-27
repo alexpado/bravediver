@@ -1,0 +1,43 @@
+services:
+  service:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: akionakao/bravediver:latest
+    user: '1000:1000'
+    ports:
+      - '8080:8080'
+    networks:
+      - bravediver
+    links:
+      - "database:database"
+    depends_on:
+      - database
+  database:
+    image: 'mariadb:11.8.2'
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+    volumes:
+      - 'bravediver:/var/lib/mysql'
+    networks:
+      - bravediver
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+networks:
+  bravediver:
+    driver: bridge
+volumes:
+  bravediver:
+    driver: local
