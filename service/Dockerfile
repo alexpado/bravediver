@@ -5,10 +5,10 @@ FROM gradle:8.14.2-jdk21-alpine AS build
 
 WORKDIR /source
 RUN git clone https://github.com/${AUTHOR}/${PROJECT}.git && \
-    cd ${PROJECT} &&  \
+    cd ${PROJECT}/backend &&  \
     gradle clean build --no-daemon &&  \
-    rm -rf /source/${PROJECT}/build/libs/*-plain.jar &&  \
-    mv /source/${PROJECT}/build/libs/*.jar /app.jar &&  \
+    rm -rf /source/${PROJECT}/backend/build/libs/*-plain.jar &&  \
+    mv /source/${PROJECT}/backend/build/libs/*.jar /app.jar &&  \
     rm -rf /source
 
 FROM openjdk:21-bookworm as service
