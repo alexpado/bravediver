@@ -15,15 +15,11 @@ class Bravediver {
         if (search.has('code')) {
             const response = await fetch(`/api/v1/auth/${search.get('code')}`);
             const auth     = await response.json();
-
-            if (auth.authenticated) {
-                this.session = auth.session;
-                return true;
-            } else {
-                // Do something with auth.message or/and auth.details (technical message).
-                return false;
-            }
+            this.session = auth.session;
+            return true;
         }
         window.location.href = Bravediver.LOGIN_URL;
     }
 }
+
+window.bravediver = new Bravediver();
