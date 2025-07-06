@@ -6,3 +6,4 @@
 Bravediver is the "Ultimate Bravery" take for Helldivers 2, where you can randomize which stratagems you'll have to use for your next
 mission (weapon randomization soon!). Invite your fellow Helldivers for even more chaos!
 
+API Docs accessible by default at [http://localhost:8080/docs/swagger-ui/index.html](http://localhost:8080/docs/swagger-ui/index.html)
