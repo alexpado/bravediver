@@ -107,7 +107,7 @@ public class RestApiController {
             @ApiResponse(responseCode = "400", description = "The authorization header was incorrectly formatted.", content = @Content(schema = @Schema(implementation = WebException.Dto.class))),
             @ApiResponse(responseCode = "401", description = "The authorization header is not associated to a session (can happen after a server restart).", content = @Content(schema = @Schema(implementation = WebException.Dto.class))),
     })
-    public ResponseEntity<ProfileDto> userData(@RequestHeader(name = "Authorization") String authorization) {
+    public ResponseEntity<ProfileDto> userData(@RequestHeader(name = "Authorization", required = false) String authorization) {
 
         User user = this.getUser(authorization);
         return ResponseEntity.ok(ProfileDto.from(user));
@@ -121,7 +121,7 @@ public class RestApiController {
             @ApiResponse(responseCode = "400", description = "One or more stratagem ids were not recognized by the service", content = @Content(schema = @Schema(implementation = WebException.Dto.class))),
             @ApiResponse(responseCode = "401", description = "The authorization header is not associated to a session (can happen after a server restart).", content = @Content(schema = @Schema(implementation = WebException.Dto.class)))
     })
-    public ResponseEntity<ProfileDto> userData(@RequestHeader("Authorization") String authorization, @RequestBody PostProfileDto body) {
+    public ResponseEntity<ProfileDto> userData(@RequestHeader(value = "Authorization", required = false) String authorization, @RequestBody PostProfileDto body) {
 
         User user = this.getUser(authorization);
 
