@@ -9,7 +9,7 @@ import java.util.List;
 @Schema(name = "Profile", description = "Represents a user profile.")
 public record ProfileDto(
         @Schema(description = "The user's discord identifier", example = "149279150648066048")
-        long id,
+        String id,
         @Schema(description = "The user's discord username", example = "akionakao")
         String username,
         @Schema(description = "The user's list of unlocked stratagems identifiers")
@@ -17,8 +17,9 @@ public record ProfileDto(
 ) {
 
     public static ProfileDto from(User user) {
+
         return new ProfileDto(
-                user.getId(),
+                String.valueOf(user.getId()),
                 user.getUsername(),
                 user.getStratagems().stream().map(Stratagem::getId).toList()
         );
