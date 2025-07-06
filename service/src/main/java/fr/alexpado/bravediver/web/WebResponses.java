@@ -15,21 +15,6 @@ import java.util.UUID;
 @Component
 public class WebResponses {
 
-    public @NotNull String applicationData(Iterable<Stratagem> stratagems) {
-
-        JSONObject json           = new JSONObject();
-        JSONArray  stratagemArray = new JSONArray();
-        JSONArray  weaponArray    = new JSONArray();
-
-        for (Stratagem stratagem : stratagems) {
-            stratagemArray.put(stratagem.toJson());
-        }
-
-        json.put("stratagems", stratagemArray);
-        json.put("weapons", weaponArray);
-        return json.toString();
-    }
-
     public @NotNull String userProfile(@Nullable User user) {
 
         JSONObject json           = new JSONObject();

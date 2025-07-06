@@ -1,12 +1,12 @@
 package fr.alexpado.bravediver.web.oauth;
 
 import fr.alexpado.bravediver.entities.User;
+import fr.alexpado.bravediver.services.UserService;
 import fr.alexpado.bravediver.web.oauth.packets.AuthTokenPacket;
 import fr.alexpado.bravediver.web.oauth.packets.RefreshTokenPacket;
 import fr.alexpado.bravediver.web.oauth.packets.UserInfoPacket;
 import fr.alexpado.bravediver.web.oauth.results.DiscordIdentity;
 import fr.alexpado.bravediver.web.oauth.results.UserToken;
-import fr.alexpado.bravediver.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -92,10 +92,9 @@ public class AuthenticationManager {
         return uuid;
     }
 
-    public Optional<User> getUserFromSession(String session) {
+    public Optional<User> getUserFromSession(UUID uuid) {
 
         try {
-            UUID uuid = UUID.fromString(session);
             return Optional.ofNullable(this.identities.get(uuid))
                            .flatMap(this.userService::findFromIdentity);
         } catch (Exception e) {
