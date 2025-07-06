@@ -14,7 +14,12 @@ public class User {
     @Column(nullable = false)
     private String username;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+    })
     private Set<Stratagem> stratagems = new HashSet<>();
 
     public Long getId() {
