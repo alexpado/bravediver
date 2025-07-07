@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Card } from "../../components/card/card";
 import { ButtonComponent } from '../../components/button';
+import { environment } from '../../../environments/environment.local'; // Use local for development
 
 @Component({
   selector: 'app-login',
@@ -9,7 +10,7 @@ import { ButtonComponent } from '../../components/button';
   styleUrl: './login.scss',
 })
 export class Login {
-  public discordClientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
+  private discordClientId = environment.discordClientId;
   
   public get discordLoginUrl(): string {
     const params = new URLSearchParams({

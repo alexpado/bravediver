@@ -1,4 +1,4 @@
-import { Component, Input, HostBinding, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, Input, HostBinding, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClientService } from '../../services/HttpClientService';
+import { authenticate, WebException } from '../../../client';
 
 @Component({
   selector: 'app-auth-callback',
@@ -21,19 +21,11 @@ import { HttpClientService } from '../../services/HttpClientService';
 export class AuthCallback implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private httpClient = inject(HttpClientService);
   
   public error: string | null = null;
 
-  ngOnInit() {
+  async ngOnInit() {
     const code = this.route.snapshot.queryParams['code'];
-    const error = this.route.snapshot.queryParams['error'];
-
-    if (error) {
-      this.error = 'Authentication failed. Redirecting to login...';
-      setTimeout(() => this.router.navigate(['/login']), 3000);
-      return;
-    }
 
     if (!code) {
       this.error = 'No authorization code received. Redirecting to login...';
@@ -41,11 +33,33 @@ export class AuthCallback implements OnInit {
       return;
     }
 
-    // TODO: Send the code to your backend to exchange for tokens
-    this.exchangeCodeForToken(code);
+    const { data, error } = await this.exchangeCodeForToken(code);
+    if (error) {
+      this.handleError(error);
+      return;
+    }
+    if (data && data.session) {
+      console.log(data)
+      this.handleSuccess(data.session);
+    } else {
+      this.error = 'No token received. Redirecting to login...';
+      console.warn('No session data received:', data);
+      setTimeout(() => this.router.navigate(['/login']), 3000);
+    }
   }
 
   private exchangeCodeForToken(code: string) {
-    this.httpClient.fetch(`/api/v1/auth/${code}`)
+    return authenticate({ path: { code } })
+  }
+
+  private handleError(error: WebException) {
+    console.error('Authentication error:', error);
+    this.error = 'An error occurred during authentication. Redirecting to login...';
+    setTimeout(() => this.router.navigate(['/login']), 3000);
+  }
+
+  private handleSuccess(token: string) {
+    window.localStorage.setItem('authToken', token);
+    this.router.navigate(['/']);
   }
 }
