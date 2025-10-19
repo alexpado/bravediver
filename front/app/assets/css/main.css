@@ -1,5 +1,7 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
 /* FOR DEMOCRATYYYYYYYYY */
-@import "tailwindcss/index.css" important;
 
 @theme static {
         --color-super-earth-50: #fffbeb;
@@ -45,6 +47,10 @@
         --color-white: #ffffff;
         --color-border-gray: #475569;
         --color-surface-gray: #1E293B;
+        --font-sans: 'Public Sans', system-ui, sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+
+        --color-background: #0f172a;
 }
 
 * {
